@@ -1,0 +1,21 @@
+{
+  "name": "muse-grants",
+  "private": true,
+  "version": "0.7.0",
+  "description": "지원사업·용역·교육·대관 공고 대시보드 (가칭 MUSE Grants)",
+  "scripts": {
+    "dev": "pnpm --filter web dev",
+    "build": "pnpm --filter web build",
+    "collect": "pnpm --filter @muse/collectors collect",
+    "typecheck": "pnpm -r typecheck"
+  },
+  "packageManager": "pnpm@10.28.0",
+  "engines": {
+    "node": ">=20"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild"
+    ]
+  }
+}

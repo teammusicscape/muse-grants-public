@@ -1,0 +1,11 @@
+{
+  "name": "MUSE Grants",
+  "short_name": "MUSE Grants",
+  "description": "지원사업·용역·교육·대관 공고 대시보드",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f6f6f2",
+  "theme_color": "#2d6e66",
+  "lang": "ko",
+  "icons": [{ "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }]
+}

@@ -1,0 +1,132 @@
+@import "tailwindcss";
+
+:root {
+  --bg: #f6f6f2;
+  --surface: #ffffff;
+  --surface-2: #f0f1ec;
+  --line: #e3e5de;
+  --line-strong: #cdd2ca;
+  --ink: #1b2322;
+  --mute: #5b6766;
+  --faint: #8b9594;
+
+  --brand: #2d6e66;
+  --brand-ink: #1f524c;
+  --brand-soft: #e2efeb;
+  --seal: #b8321f;
+  --seal-soft: #f8e6e2;
+  --amber: #93640f;
+  --amber-soft: #f6eedb;
+
+  --k-grant: #2d6e66;   --k-grant-soft: #e2efeb;
+  --k-service: #3b5ba9; --k-service-soft: #e6ecf8;
+  --k-edu: #a4631a;     --k-edu-soft: #f6ecde;
+  --k-venue: #7a4b8c;   --k-venue-soft: #f1e8f4;
+  --k-residency: #1d7a8c; --k-residency-soft: #e2f2f5;
+
+  --v-now: #2b7a4b;      --v-now-soft: #e3f1e7;
+  --v-prep: #93640f;     --v-prep-soft: #f6eedb;
+  --v-indirect: #2f6ab0; --v-indirect-soft: #e3edf9;
+  --v-no: #8b9594;       --v-no-soft: #eeefeb;
+
+  --shadow: 0 1px 2px rgb(20 30 28 / 0.04), 0 4px 16px rgb(20 30 28 / 0.05);
+  --shadow-lg: 0 12px 40px rgb(20 30 28 / 0.16);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f1413; --surface: #161c1b; --surface-2: #1d2423; --line: #29322f; --line-strong: #37423f;
+    --ink: #e7ece9; --mute: #a0aba8; --faint: #6f7a78;
+    --brand: #5fb3a6; --brand-ink: #8fd0c5; --brand-soft: #1a332f;
+    --seal: #ef7a64; --seal-soft: #3a211c; --amber: #e0b35a; --amber-soft: #352a15;
+    --k-grant: #5fb3a6; --k-grant-soft: #1a332f;
+    --k-service: #86a2e8; --k-service-soft: #1e2740;
+    --k-edu: #e0a15a; --k-edu-soft: #36281a;
+    --k-venue: #c08fd4; --k-venue-soft: #2e2236;
+    --k-residency: #6cc6d6; --k-residency-soft: #17302f;
+    --v-now: #6cc792; --v-now-soft: #173024; --v-prep: #e0b35a; --v-prep-soft: #352a15;
+    --v-indirect: #7fb0ec; --v-indirect-soft: #1a2a3e; --v-no: #6f7a78; --v-no-soft: #232a29;
+    --shadow: 0 1px 2px rgb(0 0 0 / 0.3), 0 4px 16px rgb(0 0 0 / 0.25);
+    --shadow-lg: 0 12px 40px rgb(0 0 0 / 0.5);
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0f1413; --surface: #161c1b; --surface-2: #1d2423; --line: #29322f; --line-strong: #37423f;
+  --ink: #e7ece9; --mute: #a0aba8; --faint: #6f7a78;
+  --brand: #5fb3a6; --brand-ink: #8fd0c5; --brand-soft: #1a332f;
+  --seal: #ef7a64; --seal-soft: #3a211c; --amber: #e0b35a; --amber-soft: #352a15;
+  --k-grant: #5fb3a6; --k-grant-soft: #1a332f;
+  --k-service: #86a2e8; --k-service-soft: #1e2740;
+  --k-edu: #e0a15a; --k-edu-soft: #36281a;
+  --k-venue: #c08fd4; --k-venue-soft: #2e2236;
+  --k-residency: #6cc6d6; --k-residency-soft: #17302f;
+  --v-now: #6cc792; --v-now-soft: #173024; --v-prep: #e0b35a; --v-prep-soft: #352a15;
+  --v-indirect: #7fb0ec; --v-indirect-soft: #1a2a3e; --v-no: #6f7a78; --v-no-soft: #232a29;
+  --shadow: 0 1px 2px rgb(0 0 0 / 0.3), 0 4px 16px rgb(0 0 0 / 0.25);
+  --shadow-lg: 0 12px 40px rgb(0 0 0 / 0.5);
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-ink: var(--ink);
+  --color-mute: var(--mute);
+  --color-faint: var(--faint);
+  --color-brand: var(--brand);
+  --color-brand-ink: var(--brand-ink);
+  --color-brand-soft: var(--brand-soft);
+  --color-seal: var(--seal);
+  --color-seal-soft: var(--seal-soft);
+  --color-amber: var(--amber);
+  --color-amber-soft: var(--amber-soft);
+  --font-sans: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", "Noto Sans CJK KR", system-ui, sans-serif;
+  --font-serif: "Gowun Batang", "Nanum Myeongjo", "AppleMyungjo", "Noto Serif KR", "Noto Serif CJK KR", serif;
+  --shadow-card: var(--shadow);
+  --shadow-pop: var(--shadow-lg);
+}
+
+html { -webkit-text-size-adjust: 100%; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-feature-settings: "tnum" 0;
+  -webkit-font-smoothing: antialiased;
+  letter-spacing: -0.01em;
+}
+.tnum { font-variant-numeric: tabular-nums; }
+:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; border-radius: 6px; }
+::selection { background: var(--brand-soft); }
+
+/* 종류 색 */
+.k-grant { --k: var(--k-grant); --ks: var(--k-grant-soft); }
+.k-service { --k: var(--k-service); --ks: var(--k-service-soft); }
+.k-edu { --k: var(--k-edu); --ks: var(--k-edu-soft); }
+.k-venue { --k: var(--k-venue); --ks: var(--k-venue-soft); }
+.k-residency { --k: var(--k-residency); --ks: var(--k-residency-soft); }
+.v-now { --v: var(--v-now); --vs: var(--v-now-soft); }
+.v-prep { --v: var(--v-prep); --vs: var(--v-prep-soft); }
+.v-indirect { --v: var(--v-indirect); --vs: var(--v-indirect-soft); }
+.v-no { --v: var(--v-no); --vs: var(--v-no-soft); }
+
+.scrollbar-none { scrollbar-width: none; }
+.scrollbar-none::-webkit-scrollbar { display: none; }
+.pb-safe { padding-bottom: env(safe-area-inset-bottom); }
+
+@keyframes sheet-up { from { transform: translateY(24px); opacity: 0 } to { transform: none; opacity: 1 } }
+@keyframes fade-in { from { opacity: 0 } to { opacity: 1 } }
+@keyframes slide-in { from { transform: translateX(16px); opacity: 0 } to { transform: none; opacity: 1 } }
+.anim-sheet { animation: sheet-up .22s cubic-bezier(.2,.8,.2,1); }
+.anim-fade { animation: fade-in .18s ease-out; }
+.anim-slide { animation: slide-in .2s cubic-bezier(.2,.8,.2,1); }
+@media (prefers-reduced-motion: reduce) { .anim-sheet, .anim-fade, .anim-slide { animation: none; } }
+
+/* 결정 도장 */
+.stamp {
+  font-family: var(--font-serif);
+  border: 2px solid currentColor; border-radius: 999px;
+  transform: rotate(-10deg);
+}
