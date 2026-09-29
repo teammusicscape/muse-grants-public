@@ -23,7 +23,7 @@ interface Row {
 
 function toRow(it: RawItem, sourceName: string, defaultKind?: NoticeKind, region?: string): Row {
   const kind = it.kind ?? defaultKind ?? classifyKind(it.title, sourceName);
-  const tags = [...extraTags(it.title), ...(it.keywords ?? []).map((k) => `kw:${k}`)];
+  const tags = [...extraTags(it.title, sourceName), ...(it.keywords ?? []).map((k) => `kw:${k}`)];
   const org = it.org ?? sourceName;
   const key = dedupeKey({ title: it.title, org, deadline: it.deadline ?? null });
   const details: Record<string, unknown> = { ...(it.details ?? {}) };

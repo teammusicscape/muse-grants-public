@@ -6,6 +6,12 @@ import { hrdArko } from "../src/sources/hrdArko";
 import { artmore } from "../src/sources/artmore";
 import { artnuriResidence } from "../src/sources/artnuriResidence";
 import { parseKgoNotices, kgoPlatforms } from "../src/sources/kgo";
+import { parseKoficeList, parseKoficeDetail } from "../src/sources/kofice";
+import { botameRowsToItems } from "../src/sources/botame";
+import { g2bRowToItem } from "../src/sources/g2b";
+import { parseKoccaList, parseKoccaDetail } from "../src/sources/kocca";
+import { parseEduKoccaList } from "../src/sources/eduKocca";
+import { extraTags } from "@muse/core";
 import { matchPlatforms, matchedKeywords, type Notice } from "@muse/core";
 import type { CollectContext } from "../src/base";
 
@@ -93,4 +99,36 @@ assert.equal(matchPlatforms(fake("Open call", "https://rewirefestival.nl/open-ca
 assert.equal(matchPlatforms(fake("Some other festival"), kp).length, 0);
 assert.deepEqual(matchedKeywords(fake("Multimedia performance residency"), ["media", "performance", "공연"]), ["performance", "공연"]);
 assert.deepEqual(matchedKeywords({ ...fake("사운드 미디어 공연 창작 지원"), kind: "grant" }, ["sound", "media", "performance"]), ["sound", "media", "performance"]);
-console.log("✓ 사이트별 수집기 테스트 통과 (아트누리·NCAS·예술경영지원센터·문화예술 내일·아트모아·해외레지던스·K-GO)");
+// KOFICE: 진행 중만, 제목의 (10.3) → 마감일, 첨부파일
+const ko = parseKoficeList(`<table><tbody><tr class="notice"><td data-th="제목" class="title"><a href="#" onclick="return goView(54945, '')">&lt;2026 국제문화교류 컨설팅(경상권)&gt; 참가자 모집 (10.3)</a></td><td data-th="상태"><span class="state ongoing">진행</span></td><td data-th="게시일">2026-09-23</td></tr><tr><td data-th="제목" class="title"><a onclick="return goView(54589, '')">지난 공모</a></td><td data-th="상태"><span>종료</span></td><td data-th="게시일">2026-08-12</td></tr></tbody></table>`, { mnucd: "169", bbs: "7", kind: undefined, label: "사업공모" });
+assert.equal(ko.length, 1);
+assert.equal(ko[0].deadline, "2026-10-03");
+assert.equal(parseKoficeDetail(`<div class="board-view-file"><a href="/file/download.do?atchFileSn=1&amp;atchSn=2&amp;childYn=Y"> 공고문.hwpx [ 67.93 KB ] </a></div>`).files?.[0].name, "공고문.hwpx");
+// 보탬e: 문화예술 관련 + 마감 전만
+const bt = botameRowsToItems([
+  { pbacNo: "1", pbacNm: "동행 콘서트 행사 지원", allLafNm: "충청남도 서천군", fyr: "2026", pbcnAplyRcptEndYmd: "2026-10-12" },
+  { pbacNo: "2", pbacNm: "민간개방화장실 리모델링", allLafNm: "대전광역시", fyr: "2026", pbcnAplyRcptEndYmd: "2026-10-12" },
+  { pbacNo: "3", pbacNm: "지역특성화 축제 지원", allLafNm: "서울특별시 금천구", fyr: "2026", pbcnAplyRcptEndYmd: "2026-09-01" },
+], [], "2026-09-29");
+assert.deepEqual(bt.map((x) => x.title), ["동행 콘서트 행사 지원"]);
+// 나라장터 응답 → 용역 카드
+const gb = g2bRowToItem({ bidNtceNm: "시민축제 공연 운영 용역", dminsttNm: "○○구", bidClseDt: "2026-10-05 10:00:00", presmptPrce: "45000000", bidNtceDtlUrl: "https://www.g2b.go.kr/x" }, "공연");
+assert.equal(gb?.deadline, "2026-10-05");
+assert.equal(gb?.details?.service?.budget, "추정가격 4,500만원");
+// 콘진원 지원공고
+const kc = parseKoccaList(`<table><tbody><tr><td data-label="구분"><span>자유공모</span></td><td data-label="제목" class="AlignLeft"><a href="/kocca/pims/view.do?intcNo=326D00092012&amp;menuNo=204104&amp;pageIndex=1">2026년 대중음악 공연환경 개선 지원사업 추가 공고</a></td><td data-label="공고일"> 26.09.15 </td><td data-label="접수기간"> 26.09.15 ~ 26.10.02 </td><td data-label="조회">1</td></tr></tbody></table>`);
+assert.equal(kc.length, 1);
+assert.equal(kc[0].deadline, "2026-10-02");
+assert.equal(kc[0].url, "https://www.kocca.kr/kocca/pims/view.do?intcNo=326D00092012&menuNo=204104");
+assert.match(parseKoccaDetail(`<div class="board_view01"><div class="board_cont"> 행사 개요 · 행사명 </div></div>`).summary ?? "", /행사 개요/);
+// 창업 태그
+assert.ok(extraTags("2026 예비창업패키지 모집").includes("창업"));
+assert.ok(extraTags("아무 제목", "K-Startup").includes("창업"));
+assert.ok(!extraTags("2026 다원예술 창작지원").includes("창업"));
+// 에듀코카 교육모집: 진행 카드만
+const ek = parseEduKoccaList(`<div class="swiper-wrapper"><div><a href="/edu/bbs/B0000048/view.do?nttId=76089&amp;delCode=0&amp;menuNo=500203&amp;pageIndex=1&amp;opt=2" class="col-12 show fn event_card"><div class="img_box"><img alt="" src="/cmm/fms/getImage.do?atchFileId=FILE_1&amp;fileSn=1"></div><div class="text_box"><h3>KOCCA×NETFLIX 2026 프로덕션 아카데미 교육생 모집</h3><p class="date_tag_on">진행</p><p class="event_date"> 기간 : <span class="show">2026-09-21</span> ~ <span class="show">2026-10-05</span></p></div></a></div><div><a href="/edu/bbs/B0000048/view.do?nttId=70000" class="event_card"><h3>지난 교육</h3><p class="date_tag_off">종료</p><p class="event_date"><span>2026-01-01</span> ~ <span>2026-01-10</span></p></a></div></div>`);
+assert.equal(ek.length, 1);
+assert.equal(ek[0].deadline, "2026-10-05");
+assert.equal(ek[0].kind, "edu");
+assert.equal(ek[0].thumb, "https://edu.kocca.kr/cmm/fms/getImage.do?atchFileId=FILE_1&fileSn=1");
+console.log("✓ 사이트별 수집기 테스트 통과 (아트누리·NCAS·예술경영지원센터·문화예술 내일·아트모아·해외레지던스·K-GO·KOFICE·콘진원·에듀코카·보탬e·나라장터)");

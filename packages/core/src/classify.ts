@@ -23,8 +23,13 @@ export function classifyKind(title: string, source?: string): NoticeKind {
   return "grant";
 }
 
-export function extraTags(title: string): string[] {
+/** 창업·스타트업 지원 공고 (K-Startup 등) — 탭은 지원사업, "창업" 태그로 따로 보거나 뺄 수 있음 */
+export const STARTUP_RE = /(창업|스타트업|start-?up|벤처|액셀러레이|엑셀러레이|투자\s*유치|사업화\s*지원|예비\s*기업가)/i;
+export const isStartup = (n: { tags: string[] }) => n.tags.includes("창업");
+
+export function extraTags(title: string, source?: string): string[] {
   const tags: string[] = [];
+  if (source === "K-Startup" || STARTUP_RE.test(title)) tags.push("창업");
   if (/대관료/.test(title)) tags.push("대관");
   if (/(해외|국제|international)/i.test(title)) tags.push("해외");
   if (/(청년|39세)/.test(title)) tags.push("청년");

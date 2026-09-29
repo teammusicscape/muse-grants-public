@@ -7,6 +7,8 @@ export interface Filters {
   region: string;
   entity: string;
   overseas: boolean;
+  /** 창업 지원 공고 (K-Startup 등): 모두 / 빼기 / 창업만 */
+  startup?: "all" | "hide" | "only";
   /** 국내만 */
   domestic?: boolean;
   /** 지역 조건(주거지·활동지역)이 맞지 않는 공고 빼고 보기 — 기본은 모두 보기 */
@@ -17,7 +19,7 @@ export interface Filters {
 }
 export const DEFAULT_FILTERS: Filters = { region: "all", entity: "all", overseas: false, domestic: false, regionOk: false, saved: false, showClosed: false, sort: "deadline" };
 export const activeCount = (f: Filters) =>
-  (f.region !== "all" ? 1 : 0) + (f.entity !== "all" ? 1 : 0) + (f.overseas ? 1 : 0) + (f.domestic ? 1 : 0) + (f.regionOk ? 1 : 0) + (f.saved ? 1 : 0) + (f.showClosed ? 1 : 0);
+  (f.region !== "all" ? 1 : 0) + (f.entity !== "all" ? 1 : 0) + (f.overseas ? 1 : 0) + (f.domestic ? 1 : 0) + (f.regionOk ? 1 : 0) + (f.startup && f.startup !== "all" ? 1 : 0) + (f.saved ? 1 : 0) + (f.showClosed ? 1 : 0);
 
 const SORTS: [Sort, string][] = [["deadline", "마감 임박순"], ["fit", "적합도순"], ["recent", "최신순"]];
 
@@ -58,6 +60,8 @@ export function FilterSheet({ open, onClose, f, set, regions, entities, resultCo
         <Chip on={!!f.domestic} onClick={() => set({ ...f, domestic: !f.domestic, overseas: false })}>국내만</Chip>
         <Chip on={f.overseas} onClick={() => set({ ...f, overseas: !f.overseas, domestic: false })}>해외만</Chip>
         <Chip on={!!f.regionOk} onClick={() => set({ ...f, regionOk: !f.regionOk })}>📍 지역 조건 맞는 것만</Chip>
+        <Chip on={f.startup === "only"} onClick={() => set({ ...f, startup: f.startup === "only" ? "all" : "only" })}>🚀 창업 지원만</Chip>
+        <Chip on={f.startup === "hide"} onClick={() => set({ ...f, startup: f.startup === "hide" ? "all" : "hide" })}>창업 지원 빼기</Chip>
         <Chip on={f.showClosed} onClick={() => set({ ...f, showClosed: !f.showClosed })}>마감된 공고 포함</Chip>
       </Group>
       <div className="sticky bottom-0 -mx-5 px-5 pt-3 pb-2 bg-surface flex gap-2">
@@ -85,6 +89,11 @@ export function FilterBar({ f, set, regions, entities, showOverseas }: { f: Filt
       {showOverseas && <button aria-pressed={!!f.domestic} className={tog(!!f.domestic)} onClick={() => set({ ...f, domestic: !f.domestic, overseas: false })}>국내</button>}
       {showOverseas && <button aria-pressed={f.overseas} className={tog(f.overseas)} onClick={() => set({ ...f, overseas: !f.overseas, domestic: false })}>해외</button>}
       <button aria-pressed={!!f.regionOk} title="내 주거지·활동지역 조건이 맞지 않는 공고를 잠시 빼고 봐요" className={tog(!!f.regionOk)} onClick={() => set({ ...f, regionOk: !f.regionOk })}>📍 지역 맞음</button>
+      <select aria-label="창업 지원 공고" className={select} value={f.startup ?? "all"} onChange={(e) => set({ ...f, startup: e.target.value as Filters["startup"] })}>
+        <option value="all">창업 공고 포함</option>
+        <option value="hide">창업 공고 빼기</option>
+        <option value="only">창업 공고만</option>
+      </select>
       <button aria-pressed={f.saved} className={cx(tog(f.saved), f.saved && "!border-amber !bg-amber-soft !text-amber")} onClick={() => set({ ...f, saved: !f.saved })}>★ 저장한 것</button>
       <select aria-label="정렬" className={select} value={f.sort} onChange={(e) => set({ ...f, sort: e.target.value as Sort })}>
         {SORTS.map(([k, l]) => <option key={k} value={k}>{l}</option>)}

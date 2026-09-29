@@ -157,7 +157,7 @@
 
 ## 선택 기능
 
-- **공공데이터 공고 더 받기 (K-Startup 등)**: [공공데이터포털](https://www.data.go.kr)에서 인증키를 받아 GitHub 비밀값 `DATA_GO_KR_KEY` 로 등록
+- **공공데이터 공고 더 받기 (K-Startup · 나라장터 용역 입찰)**: [공공데이터포털](https://www.data.go.kr)에서 "조달청_나라장터 입찰공고정보서비스"(와 K-Startup 사업공고)를 활용 신청하고, 마이페이지의 일반 인증키를 GitHub 비밀값 `DATA_GO_KR_KEY` 로 등록
 - **로그인 없는 체험 모드 (다른 사람에게 둘러보게 할 때)**: Supabase에서 `cloud/supabase/migrations/0005_guest_read.sql` 실행 → Vercel 환경변수 `NEXT_PUBLIC_GUEST_MODE` = `1` 추가 후 Redeploy. 체험 링크는 `내앱주소/?try`
 - **로그인 메일 제한 풀기**: Supabase 기본 메일은 시간당 몇 통만 보내요. 자주 막히면 Authentication → Emails → **SMTP Settings** 에 내 Gmail + [앱 비밀번호](https://myaccount.google.com/apppasswords)를 연결하세요. (Host `smtp.gmail.com`, Port `465`)
 

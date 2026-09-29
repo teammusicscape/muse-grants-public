@@ -51,3 +51,18 @@ export function hash(s: string): string {
   for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); }
   return (h >>> 0).toString(36);
 }
+
+/** 제목의 "(10.3)", "(~9.20)", "(10. 3.)" 같은 마감 표기 → YYYY-MM-DD (게시일 기준으로 연도 추정) */
+export function deadlineFromTitle(t: string, posted?: string): string | undefined {
+  const m = /[(~∼\s]\s*~?\s*(\d{1,2})\s*[./]\s*(\d{1,2})\s*\.?\s*(?:\([월화수목금토일]\))?\s*(?:까지)?\s*\)?\s*$/.exec(t) ?? /~\s*(\d{1,2})[./](\d{1,2})/.exec(t);
+  if (!m) return undefined;
+  const mm = +m[1], dd = +m[2];
+  if (mm < 1 || mm > 12 || dd < 1 || dd > 31) return undefined;
+  const y = posted ? +posted.slice(0, 4) : new Date().getFullYear();
+  const pm = posted ? +posted.slice(5, 7) : new Date().getMonth() + 1;
+  const year = mm < pm - 6 ? y + 1 : y;
+  return `${year}-${String(mm).padStart(2, "0")}-${String(dd).padStart(2, "0")}`;
+}
+
+/** 문화예술과 관련 있는 공고인지 (지자체 보조사업·조달 입찰처럼 모든 분야가 섞인 곳을 거를 때) */
+export const ARTS_RE = /(문화|예술|공연|음악|음향|사운드|축제|콘서트|음악회|연주|전시|미술|영상|영화|미디어|뮤지컬|연극|무용|국악|오케스트라|합창|밴드|창작|레지던|페스티벌|아트|문예|버스킹|청년\s*예술|예술인|공연장|문화재단|문화원|행사\s*(기획|운영|대행))/;

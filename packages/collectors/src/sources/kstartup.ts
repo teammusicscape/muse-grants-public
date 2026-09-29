@@ -26,6 +26,8 @@ export const kstartup: Collector = {
       postedAt: normDate(r.pbanc_rcpt_bgng_dt),
       deadline: normDate(r.pbanc_rcpt_end_dt),
       region: r.supt_regin ?? undefined,
+      fields: [r.supt_biz_clsfc, r.biz_enyy].filter(Boolean).map(String),
+      applyUrl: r.biz_aply_url || undefined,
       summary: r.pbanc_ctnt ? String(r.pbanc_ctnt).slice(0, 200) : undefined,
     })).filter((x) => x.title);
   },

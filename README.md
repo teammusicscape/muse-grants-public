@@ -32,7 +32,7 @@ pnpm dev          # http://localhost:3000
    - Authentication → URL Configuration → **Redirect URLs**에 `https://<Vercel 주소>/**` 추가 (같은 프로젝트를 다른 앱과 함께 쓰면 Site URL은 그대로 둘 것)
 2. **GitHub**: 저장소 Settings → Secrets and variables → Actions에 등록
    - `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` (Supabase → Project Settings → API Keys의 secret/service_role 키)
-   - `DATA_GO_KR_KEY` (선택, K-Startup API)
+   - `DATA_GO_KR_KEY` (선택, 공공데이터포털 인증키 — K-Startup · 조달청 나라장터 입찰공고. data.go.kr에서 "조달청_나라장터 입찰공고정보서비스" 활용 신청 필요)
 3. **Vercel**: Project → Settings → Environment Variables → 추가 후 Redeploy
    - `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY` (publishable/anon 키)
 4. GitHub Actions 탭 → "공고 수집" → **Run workflow** 로 첫 수집

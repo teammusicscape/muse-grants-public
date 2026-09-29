@@ -124,6 +124,7 @@ export function NoticeCard({ n, active, onOpen, activeKeywords, onPickKeyword }:
             <span className="truncate max-w-[60%]">{n.org}{n.region && n.region !== "전국" && !n.overseas ? ` · ${n.region}` : ""}</span>
             <KindBadge kind={n.kind} />
             {n.overseas && n.kind !== "residency" && <span className="text-[11px] font-medium">해외</span>}
+            {n.tags.includes("창업") && <span className="text-[11px] font-semibold text-[var(--k-service)]">창업</span>}
             <span className="hidden md:contents">{n.sources.map((s) => <SourceBadge key={s} s={s} />)}</span>
             <span className="md:hidden">{n.sources.includes("IG") && <SourceBadge s="IG" />}</span>
             {n.needsReview && <span className="text-[11px] font-semibold text-amber">확인 필요</span>}

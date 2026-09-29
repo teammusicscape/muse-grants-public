@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { AppProvider } from "@/lib/store";
 import { AppShell } from "@/components/AppShell";
+import { Analytics } from "@vercel/analytics/next";
 
 export const metadata: Metadata = {
   title: "MUSE Grants — 공고 대시보드",
@@ -37,6 +38,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <AppProvider>
           <AppShell>{children}</AppShell>
         </AppProvider>
+        {/* 방문자 수 통계 (Vercel → Analytics에서 켜야 기록됨, 쿠키·개인 식별 없음) */}
+        <Analytics />
       </body>
     </html>
   );

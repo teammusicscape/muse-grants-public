@@ -2,7 +2,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { Hash, Inbox, Keyboard, UserPlus, LayoutGrid, LayoutList, Plus, Search, SlidersHorizontal, Table2, X } from "lucide-react";
-import { ALL_KINDS, bestRegionFit, daysLeft, fitTotal, isOpen, KIND_LABEL, matchedKeywords, sortByDeadline, type Notice, type NoticeKind } from "@muse/core";
+import { ALL_KINDS, bestRegionFit, isStartup, daysLeft, fitTotal, isOpen, KIND_LABEL, matchedKeywords, sortByDeadline, type Notice, type NoticeKind } from "@muse/core";
 import { useApp } from "@/lib/store";
 import { NoticeCard, NoticeTable, PosterCard } from "@/components/NoticeCard";
 import { NoticeDetail } from "@/components/NoticeDetail";
@@ -68,6 +68,8 @@ export default function FeedPage() {
       if (f.region !== "all" && n.region !== f.region) return false;
       if (f.overseas && !n.overseas) return false;
       if (f.domestic && n.overseas) return false;
+      if (f.startup === "hide" && isStartup(n)) return false;
+      if (f.startup === "only" && !isStartup(n)) return false;
       if (f.regionOk && bestRegionFit(n, entities)?.status === "mismatch") return false;
       if (f.saved && !state.starred[n.id]) return false;
       if (kwActive.length) {

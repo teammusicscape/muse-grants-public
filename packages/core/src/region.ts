@@ -56,6 +56,15 @@ function sidoOf(text: string): string | undefined {
 
 /** 기관명에서 지역 찾기: "(재)마포문화재단" → 서울 마포구, "경기문화재단" → 경기 */
 export function placeFromOrg(org: string): Place | undefined {
+  // "충청남도 서천군", "서울특별시 금천구" 같은 자치단체 이름 (보탬e 등)
+  const lg = /^\s*(\S+?(?:특별시|광역시|특별자치시|특별자치도|통합특별시|도))(?:\s+(\S+?(?:시|군|구)))?\s*$/.exec(org);
+  if (lg) {
+    const sd = sidoOf(lg[1]);
+    if (sd) {
+      const g = lg[2] && SIGUNGU[sd]?.includes(lg[2]) ? lg[2] : undefined;
+      return g ? { sido: sd, sigungu: g } : { sido: sd };
+    }
+  }
   const o = org.replace(/\(재\)|재단법인|\s/g, "");
   if (!o) return undefined;
   if (/^세종문화회관/.test(o)) return { sido: "서울" };
