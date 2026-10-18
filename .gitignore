@@ -2,7 +2,47 @@ node_modules
 .next
 out
 dist
-.env
-.env.local
 *.log
 .DS_Store
+
+# Environment secrets at any depth; keep value-free examples trackable.
+.env
+.env.*
+!.env.example
+!.env.*.example
+
+# Local artifacts: use these root folders for arbitrary filenames/formats.
+# Do not ignore all JSON, CSV, SQL or images: app config/assets need Git.
+/exports/
+/backups/
+/screenshots/
+
+# Clearly named root-level exports (other exports belong in /exports/).
+/contacts.csv
+/export-*.json
+/export-*.csv
+/export_*.json
+/export_*.csv
+/*.export.json
+/*.export.csv
+
+# Root-level backups; SQL migrations and test fixtures remain trackable.
+/backup.json
+/backup.csv
+/*.bak
+/*.backup
+/*.dump
+/*.sql.gz
+/*.db
+/*.sqlite
+/*.sqlite3
+/backup*.zip
+/backup*.tar.gz
+
+# Root-level screenshot captures; normal application images remain trackable.
+/[Ss]creenshot*.png
+/[Ss]creenshot*.jpg
+/[Ss]creenshot*.jpeg
+/스크린샷*.png
+/스크린샷*.jpg
+/스크린샷*.jpeg
