@@ -5,7 +5,12 @@ on:
   schedule:
     - cron: "0 21 * * *"   # 06:00 KST
     - cron: "0 9 * * *"    # 18:00 KST
-  workflow_dispatch: {}      # Actions 탭에서 [Run workflow]로 바로 실행
+  workflow_dispatch: {}      # Actions 탭에서 [Run workflow]로 바로 실행 (앱의 [지금 수집] 버튼도 이걸 씀)
+
+# 정해진 수집과 [지금 수집]이 겹치면 앞의 것이 끝난 뒤 이어서 실행
+concurrency:
+  group: collect
+  cancel-in-progress: false
 
 jobs:
   collect:

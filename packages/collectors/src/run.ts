@@ -7,13 +7,14 @@ import { createClient } from "@supabase/supabase-js";
 import { classifyKind, dedupeKey, extraTags, titleKey, todayISO, type NoticeKind } from "@muse/core";
 import { COLLECTORS } from "./sources";
 import { kgoPlatforms } from "./sources/kgo";
-import { fetchJson, fetchText, hash } from "./util";
+import { fetchJson, fetchText, hash, redactApiKeys } from "./util";
 import type { CollectContext, RawItem } from "./base";
 
 const DRY = process.argv.includes("--dry");
 const DETAIL_VERSION = 2;
 const only = process.argv.find((a) => a.startsWith("--only="))?.slice(7);
 const env = process.env;
+const safeMessage = (message: string) => redactApiKeys(message, env.DATA_GO_KR_KEY);
 
 interface Row {
   id: string; dedupe_key: string; kind: NoticeKind; title: string; org: string | null; sources: string[]; url: string;
@@ -41,7 +42,7 @@ function toRow(it: RawItem, sourceName: string, defaultKind?: NoticeKind, region
 }
 
 async function main() {
-  const log = (m: string) => console.log(`[수집] ${m}`);
+  const log = (m: string) => console.log(`[수집] ${safeMessage(m)}`);
   const live = !DRY && !!env.SUPABASE_URL && !!env.SUPABASE_SERVICE_ROLE_KEY;
   const sb = live ? createClient(env.SUPABASE_URL!, env.SUPABASE_SERVICE_ROLE_KEY!, { auth: { persistSession: false }, db: { schema: env.SUPABASE_SCHEMA || "grants" } }) : null;
 
@@ -71,7 +72,7 @@ async function main() {
         else rows.set(r.dedupe_key, r);
       }
     } catch (e) {
-      const msg = (e as Error).message;
+      const msg = safeMessage((e as Error).message);
       errors.push({ source: c.id, error: msg });
       log(`⚠️ ${c.name} 실패: ${msg}`);
     }
@@ -184,8 +185,8 @@ async function main() {
   }
 
   const { data: cleaned } = await sb.rpc("cleanup_old_notices");
-  await sb.from("collect_runs").update({ finished_at: new Date().toISOString(), found: list.length, added, errors }).eq("id", run?.id);
+  await sb.from("collect_runs").update({ finished_at: new Date().toISOString(), found: list.length, added, errors: errors.map(({ source, error }) => ({ source, error: safeMessage(error) })) }).eq("id", run?.id);
   log(`저장 완료: ${list.length}건 (새 공고 ${added}건, 정리 ${cleaned ?? 0}건, 오류 ${errors.length}건)`);
 }
 
-main().catch((e) => { console.error(e); process.exit(1); });
+main().catch((e) => { console.error(safeMessage(e instanceof Error ? e.message : String(e))); process.exit(1); });

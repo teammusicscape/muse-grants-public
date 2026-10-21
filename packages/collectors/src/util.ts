@@ -1,6 +1,9 @@
 const UA = "Mozilla/5.0 (compatible; MUSE-Grants/0.1; notice collector)";
 let last = 0;
 
+/** 사용자 키워드로 검색하는 사이트(아트누리·나라장터)에서 검색할 키워드 최대 개수 (모든 사용자 키워드 합산) */
+export const MAX_SEARCH_KEYWORDS = 60;
+
 /** 사이트에 부담을 주지 않도록 요청 사이 1.2초 간격 */
 async function polite() {
   const wait = last + 1200 - Date.now();
@@ -8,11 +11,26 @@ async function polite() {
   last = Date.now();
 }
 
+/** Only redact diagnostic text; never use the result as a request URL. */
+export function redactApiKeys(message: string, secret?: string): string {
+  let safe = message.replace(/([?&]servicekey=)[^&#\s"'<>`]*/gi, "$1[REDACTED]");
+  if (secret) {
+    for (const value of [...new Set([secret, encodeURIComponent(secret)])].sort((a, b) => b.length - a.length)) {
+      safe = safe.split(value).join("[REDACTED]");
+    }
+  }
+  return safe;
+}
+
 export async function fetchText(url: string, init?: RequestInit): Promise<string> {
   await polite();
-  const r = await fetch(url, { ...init, headers: { "user-agent": UA, "accept-language": "ko-KR,ko;q=0.9", ...(init?.headers ?? {}) } });
-  if (!r.ok) throw new Error(`${r.status} ${r.statusText} — ${url}`);
-  return r.text();
+  try {
+    const r = await fetch(url, { ...init, headers: { "user-agent": UA, "accept-language": "ko-KR,ko;q=0.9", ...(init?.headers ?? {}) } });
+    if (!r.ok) throw new Error(`${r.status} ${r.statusText} — ${url}`);
+    return await r.text();
+  } catch (e) {
+    throw new Error(redactApiKeys(e instanceof Error ? e.message : String(e)));
+  }
 }
 
 export async function fetchJson<T>(url: string): Promise<T> {

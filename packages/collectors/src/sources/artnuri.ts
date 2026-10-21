@@ -1,6 +1,6 @@
 import * as cheerio from "cheerio";
 import type { Collector, RawItem } from "../base";
-import { clean, deadlineFromPeriod, normDate } from "../util";
+import { clean, deadlineFromPeriod, MAX_SEARCH_KEYWORDS, normDate } from "../util";
 
 /**
  * 아트누리 — 여러 기관의 예술지원사업을 모아둔 통합 플랫폼 (1순위)
@@ -96,7 +96,7 @@ export const artnuri: Collector = {
     ctx.log(`아트누리 최신 목록: ${all.size}건`);
     // ② 내 키워드로 검색 (키워드당 1쪽)
     // 한글 사이트라 한글 키워드만 검색 (영문 키워드는 해외 공고 매칭용)
-    for (const kw of ctx.keywords.filter((k) => /[가-힣]/.test(k)).slice(0, 20)) {
+    for (const kw of ctx.keywords.filter((k) => /[가-힣]/.test(k)).slice(0, MAX_SEARCH_KEYWORDS)) {
       const got = parseList(await ctx.fetchText(`${BASE}search.do?key=2301170002&recordCountPerPage=20&pageIndex=1&sw=${encodeURIComponent(kw)}`), kw);
       add(got);
       ctx.log(`아트누리 '${kw}' 검색: ${got.length}건`);

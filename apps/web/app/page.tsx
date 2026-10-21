@@ -7,6 +7,7 @@ import { useApp } from "@/lib/store";
 import { NoticeCard, NoticeTable, PosterCard } from "@/components/NoticeCard";
 import { NoticeDetail } from "@/components/NoticeDetail";
 import { AddNotice } from "@/components/AddNotice";
+import { CollectNow } from "@/components/CollectNow";
 import { activeCount, DEFAULT_FILTERS, FilterBar, FilterSheet, type Filters } from "@/components/FeedFilters";
 import { Button, cx, Empty, IconButton, Segmented, Tip } from "@/components/ui";
 import { usePref } from "@/lib/prefs";
@@ -233,6 +234,7 @@ export default function FeedPage() {
               <p className="text-[12.5px] text-mute mt-1 flex items-center gap-1 whitespace-nowrap">
                 <span className="size-1.5 rounded-full bg-brand" /><span className="tnum">{syncText}</span> 수집 기준 · 접수 중 <b className="text-ink tnum">{open.length}</b>건
                 <Tip>하루 두 번(06:00, 18:00) 자동으로 새 공고를 모아요. 공고 정보는 바뀔 수 있으니 지원 전에 원문을 꼭 확인하세요.</Tip>
+                <CollectNow className="ml-1.5" />
               </p>
             </div>
             <div className="flex items-center gap-2 flex-1 justify-end min-w-[300px]">
@@ -271,6 +273,7 @@ export default function FeedPage() {
           {/* 모바일: 수집 상태 + 요약 칩 (가로 스크롤) */}
           <p className="lg:hidden mt-2.5 text-[12px] text-mute flex items-center gap-1">
             <span className="size-1.5 rounded-full bg-brand" /><span className="tnum">{syncText}</span> 수집 · 접수 중 <b className="text-ink tnum">{open.length}</b>건
+            <CollectNow className="ml-auto" />
           </p>
           <div className="lg:hidden mt-2.5 -mx-4 px-4 flex gap-1.5 overflow-x-auto scrollbar-none">
             {shownQuick.map((x) => (

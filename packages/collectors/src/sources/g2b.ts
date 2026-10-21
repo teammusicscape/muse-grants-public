@@ -1,4 +1,5 @@
 import type { Collector, RawItem } from "../base";
+import { MAX_SEARCH_KEYWORDS } from "../util";
 
 /**
  * 조달청 나라장터 — 용역 입찰공고 (공공데이터포털 공식 API)
@@ -41,7 +42,7 @@ export const g2b: Collector = {
     if (!key) { ctx.log("나라장터: DATA_GO_KR_KEY가 없어 건너뜀"); return []; }
     const now = new Date();
     const from = new Date(now.getTime() - 30 * 864e5);
-    const kws = [...new Set([...G2B_BASE_KEYWORDS, ...ctx.keywords.filter((k) => /[가-힣]/.test(k))])].slice(0, 24);
+    const kws = [...new Set([...G2B_BASE_KEYWORDS, ...ctx.keywords.filter((k) => /[가-힣]/.test(k))])].slice(0, MAX_SEARCH_KEYWORDS + G2B_BASE_KEYWORDS.length);
     const byNo = new Map<string, RawItem>();
     const nowStr = now.toISOString().slice(0, 10);
     for (const kw of kws) {
